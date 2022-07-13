@@ -1,0 +1,245 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Template for USENIX papers.
+%
+% History:
+%
+% - TEMPLATE for Usenix papers, specifically to meet requirements of
+%   USENIX '05. originally a template for producing IEEE-format
+%   articles using LaTeX. written by Matthew Ward, CS Department,
+%   Worcester Polytechnic Institute. adapted by David Beazley for his
+%   excellent SWIG paper in Proceedings, Tcl 96. turned into a
+%   smartass generic template by De Clarke, with thanks to both the
+%   above pioneers. Use at your own risk. Complaints to /dev/null.
+%   Make it two column with no page numbering, default is 10 point.
+%
+% - Munged by Fred Douglis <douglis@research.att.com> 10/97 to
+%   separate the .sty file from the LaTeX source template, so that
+%   people can more easily include the .sty file into an existing
+%   document. Also changed to more closely follow the style guidelines
+%   as represented by the Word sample file.
+%
+% - Note that since 2010, USENIX does not require endnotes. If you
+%   want foot of page notes, don't include the endnotes package in the
+%   usepackage command, below.
+% - This version uses the latex2e styles, not the very ancient 2.09
+%   stuff.
+%
+% - Updated July 2018: Text block size changed from 6.5" to 7"
+%
+% - Updated Dec 2018 for ATC'19:
+%
+%   * Revised text to pass HotCRP's auto-formatting check, with
+%     hotcrp.settings.submission_form.body_font_size=10pt, and
+%     hotcrp.settings.submission_form.line_height=12pt
+%
+%   * Switched from \endnote-s to \footnote-s to match Usenix's policy.
+%
+%   * \section* => \begin{abstract} ... \end{abstract}
+%
+%   * Make template self-contained in terms of bibtex entires, to allow
+%     this file to be compiled. (And changing refs style to 'plain'.)
+%
+%   * Make template self-contained in terms of figures, to
+%     allow this file to be compiled. 
+%
+%   * Added packages for hyperref, embedding fonts, and improving
+%     appearance.
+%   
+%   * Removed outdated text.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix-2020-09}
+
+% to be able to draw some self-contained figs
+\usepackage{tikz}
+\usepackage{amsmath}
+
+% inlined bib file
+\usepackage{filecontents}
+
+%-------------------------------------------------------------------------------
+\begin{filecontents}{\jobname.bib}
+%-------------------------------------------------------------------------------
+@Book{RUB,
+  author =       {RUB-SysSec},
+  title =        {Siemens S7 PLCs Bootloader Arbitrary Code Execution Utility},
+  publisher =    {Unbekannt},
+  year =         2020,
+  edition =      {1.00},
+  note =         {\url{https://github.com/RUB-SysSec/SiemensS7-Bootloader}}
+}
+@InProceedings{beuth,
+  author =       {Patrick Beuth},
+  title =        {{"Stuxnet"-Entdeckung vor zehn Jahren|Die erste Cyberwaffe und ihre Folgen}},
+  booktitle =    {{"Stuxnet"-Entdeckung vor zehn Jahren|Die erste Cyberwaffe und ihre Folgen}},
+  year =         2020,
+  pages =        {1--2},
+  note =         {\url{https://www.spiegel.de/netzwelt/web/die-erste-cyberwaffe-und-ihre-folgen-a-a0ed08c9-5080-4ac2-8518-ed69347dc147}}}
+\end{filecontents}
+
+%-------------------------------------------------------------------------------
+\begin{document}
+%-------------------------------------------------------------------------------
+
+%don't want date printed
+\date{}
+
+% make title bold and 14 pt font (Latex default is non-bold, 16 pt)
+\title{\Large \bf Sicherheit industrieller Steuerungssysteme:\\
+  Siemens Simatic-S7 1200}
+
+%for single author (just remove % characters)
+\author{
+{\rm  Ch.\ Weis}\\
+%\and
+%{\rm Second Name}\\
+%Second Institution
+% copy the following lines to add more authors
+% \and
+% {\rm Name}\\
+%Name Institution
+} % end author
+
+\maketitle
+
+%-------------------------------------------------------------------------------
+\begin{abstract}
+%-------------------------------------------------------------------------------
+Das Projekt beschäftigt sich mit der Sicherheit und verschiedenen Angriffsvektoren eines Simatic-S7 Steuerungssystem.
+Verwendet wurde ein Gerät der 1200er Reihe.
+\end{abstract}
+
+
+%-------------------------------------------------------------------------------
+\section{Einleitung}
+%-------------------------------------------------------------------------------
+
+Heutzutage sind intelligente Steuerungssysteme von Nöten um in Industrieanlagen effizient zu produzieren.
+Sicherheit spielt dabei immer eine wichtige Rolle wie man zum Beispiel beim Virus Stuxnet erkennt.
+Ins besonders sind die oben genannten Siemens Systeme gefährdet, da diese am meisten verwendet werden.
+
+%-------------------------------------------------------------------------------
+\section{Werkzeuge und Materialien}
+%-------------------------------------------------------------------------------
+
+Verwendet wurden die Tools Nmap und Wireshark.\\
+\\
+\noindent{\large Nmap:} Nmap, von Gordon Lyon entwickelt, ist ein Tool um Netzwerke oder auch einzelne IP-Adressen zu scannen, um Services und Ports zu finden. 
+Nmap zeigt die offenen Ports mit den jeweiligen Protokollen an.
+	  
+\noindent{\large Wireshark:} Wireshark, von der Wireshark-Community entwickelt, wird verwendet um Netzwerkverbindung zu überwachen und mitzuschneiden.
+ Hiermit kann man IP-Adressen, MAC-Adressen und weitere Informationen aus einem Netzwerk mitschneiden und abhören.
+
+\noindent{\large S7-1200:} Der Siemens Simatic-S7 1200 mit 1212C AC/DC/RLY CPU wurde als Ziel-Gerät ausgewählt, da er ein häufig verwendetes Gerät der Industrie ist. 
+Das S7-System wird zu Automation von großen Industrieanlagen verwendet, indem es selber auf Daten von Sensoren reagiert, wenn es vorher einprogrammiert wurde, reagiert.
+Das System kann über verschiedenen Programme gesteuert werden.
+
+
+
+\cite{RUB}
+\cite{beuth}
+%~\cite{waldspurger02,arpachiDusseau18:osbook}. 
+
+%~\ref{sec:figs}, but not before
+
+
+%-------------------------------------------------------------------------------
+\section{Vorgehen}
+\label{sec:figs}
+%-------------------------------------------------------------------------------
+Als erstes musste man das Gerät mit Nmap scannen um herauszufinden welche Protokolle von dem Gerät gesprochen werden.
+Dafür wurde der "-sS"-Scan verwendet und mit dem "-sV"-Scan ergänzt.
+"-sS" scannt das Ziel-Gerät im "stealty"-Modus und "-sV" scannt nach der Version verwendeter Services.
+Die Scans wurden mit Wireshark mitgeschnitten und überwacht. Man konnte dann beide offenen Ports sehen und das Protokoll sich anzeigen lassen.
+
+\begin{verbatim}
+	PORT 		STATE 	SERVICE
+	102/tcp 	open	ios-tsap
+	4840/tcp 	open	opcua
+\end{verbatim}
+
+
+
+
+%---------------------------
+%\begin{figure}
+%\begin{center}
+%\begin{tikzpicture}
+ % \draw[thin,gray!40] (-2,-2) grid (2,2);
+  %\draw[<->] (-2,0)--(2,0) node[right]{$x$};
+  %\draw[<->] (0,-2)--(0,2) node[above]{$y$};
+  %\draw[line width=2pt,blue,-stealth](0,0)--(1,1)
+   %     node[anchor=south west]{$\boldsymbol{u}$};
+  %\draw[line width=2pt,red,-stealth](0,0)--(-1,-1)
+   %     node[anchor=north east]{$\boldsymbol{-u}$};
+%\end{tikzpicture}
+%\end{center}
+%\caption{\label{fig:vectors} Text size inside figure should be as big as
+ % caption's text. Text size inside figure should be as big as
+  %caption's text. Text size inside figure should be as big as
+  %caption's text. Text size inside figure should be as big as
+  %caption's text. Text size inside figure should be as big as
+  %caption's text. }
+%\end{figure}
+%% %---------------------------
+
+
+\noindent Nun wurden Implementierungen für die verschiedenen Protokolle gesucht.
+Gefunden wurde bei der Recherche nur ein Verweise auf eine Schwachstelle(CVE-2019-13945) mit dem Protokoll opcua, welches in dem Gerät vorhanden seien soll.
+Die Schwachstelle befindet sich im Bootloader und kann wärend des Bootvorgangs in einem Zeitfenster von genau einer halbe Sekunde 
+exploitet werden. Der Bootloader muss die Version 4.2.1 vorweisen. Wärend des Zeitfensters könnte man dann ein Payload aufspielen und es danach ausführen. 
+Auch außerhalb des Zeitfensters. 
+Um eine Verbindung mit dem S7 1200 zu bilden muss der Computer über ein Adapter für serielle Verbindungen verfügen.
+Auf dem mir zugänglichen Gerät aber befindet sich eine neuere Bootloader Version, in der der Exploit nicht mehr vorhanden ist.
+Auf verschiedenen Websites ist kein Verweis auf das Erscheinungsdatum verschiedener Bootloaderversionen. Einzig die Firmware wird aufgeführt, 
+jedoch ohne Erscheinungsdaten.\\
+Darauf wurde versucht das Siemens Simatic-Step7 System auf einem Windowsrechner zu installieren. 
+Jedoch ohne Erfolg.
+
+
+%\begin{description}
+  
+%\item[fread] a function that reads from a \texttt{stream} into the
+%  array \texttt{ptr} at most \texttt{nobj} objects of size
+%  \texttt{size}, returning returns the number of objects read.
+
+%\item[Fred] a person's name, e.g., there once was a dude named Fred
+%  who separated usenix.sty from this file to allow for easy
+%  inclusion.
+%\end{description}
+
+
+\subsection{Schlussfolgerung}
+%-----------------------------------
+
+Die oben genannte Schwachstelle(CVE-2019-13945) konnte nicht nachgewiesen werden und trotzdem ist diese Schwachstelle nicht zu unterschätzen, da doch große Schäden bei älteren Geräten auftreten können, wenn diese Schwachstelle von Angreifern gefunden wird.
+
+%-------------------------------------------------------------------------------
+%\section*{Acknowledgments}
+%-------------------------------------------------------------------------------
+
+%The USENIX latex style is old and very tired, which is why
+%there's no \textbackslash{}acks command for you to use when
+%acknowledging. Sorry.
+
+%-------------------------------------------------------------------------------
+%\section*{Availability}
+%-------------------------------------------------------------------------------
+
+%USENIX program committees give extra points to submissions that are
+%backed by artifacts that are publicly available. If you made your code
+%or data available, it's worth mentioning this fact in a dedicated
+%section.
+
+%-------------------------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{\jobname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%  LocalWords:  endnotes includegraphics fread ptr nobj noindent
+%%  LocalWords:  pdflatex acks
